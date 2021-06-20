@@ -14,7 +14,7 @@ root = tk.Tk()
 root.title('Selective search')
 root.iconbitmap('logo-uit.ico')
 root.geometry('900x600')
-root.configure(bg='white')
+root.configure(bg='#ebd9d8')
 
 
 def select_file():
@@ -71,15 +71,17 @@ def processing():
     end = time.time()
     # show how along selective search took to run along with the total
     # number of returned region proposals
-    print("[INFO] selective search took {:.4f} seconds".format(end - start))
-    print("[INFO] {} total region proposals".format(len(rects)))
+    #print("[INFO] selective search took {:.4f} seconds".format(end - start))
+    #print("[INFO] {} total region proposals".format(len(rects)))
+    lbl_time.configure(text='Selective search took {:.4f} seconds'.format(end - start))
+    lbl_region.configure(text='{} total region proposals'.format(len(rects)))
     # loop over the region proposals in chunks (so we can better
     # visualize them)
-    for i in range(0, len(rects), 100):
+    for i in range(0, len(rects), 50):
         # clone the original image so we can draw on it
         output = img_root.copy()
         # loop over the current subset of region proposals
-        for (x, y, w, h) in rects[i:i + 100]:
+        for (x, y, w, h) in rects[i:i + 50]:
             # draw the region proposal bounding box on the image
             color = [random.randint(0, 255) for j in range(0, 3)]
             cv2.rectangle(output, (x, y), (x + w, y + h), color, 2)
@@ -89,11 +91,11 @@ def processing():
         lbl_img_res.configure(image=output)
         lbl_img_res.image = output
         lbl_img_res.update()
-        print('Processing')
-        time.sleep(2)
+        time.sleep(1)
 
     print('end')
-    showinfo('Your process is done', 'If result does not satisfied, please try a gain with "Quality mode"')
+    showinfo('Your process is done', 'Done!')
+
     btn_open['state'] = NORMAL
 
 
@@ -103,17 +105,23 @@ btn_open.place(anchor=SE, x=250, y=100, width=50)
 btn_kmean = Button(root, text='Processing', font=('Arial', 10), command=processing, bg='white')
 btn_kmean.place(anchor=SE, x=380, y=100, width=100)
 
-lbl_method = Label(root, text='Method: ', font=('Arial', 10), bg='white')
+lbl_method = Label(root, text='Method: ', font=('Arial', 10), bg='#ebd9d8')
 lbl_method.place(anchor=SE, x=470, y=98)
 
 input_entry = Entry(root, highlightthickness=1)
 input_entry.configure(highlightbackground='black')
 input_entry.place(anchor=SE, x=600, y=97)
 
-lbl_image_root = Label(root, bg='white')
+lbl_image_root = Label(root, bg='#ebd9d8')
 lbl_image_root.place(anchor=E, x=600, y=300)
 
-lbl_img_res = Label(root, bg='white')
+lbl_img_res = Label(root, bg='#ebd9d8')
 lbl_img_res.place(anchor=E, x=1200, y=300)
+
+lbl_time = Label(root, bg='#ebd9d8', font=('Arial', 20))
+lbl_time.place(anchor=NE, x=500, y=700)
+
+lbl_region = Label(root, bg='#ebd9d8', font=('Arial', 20))
+lbl_region.place(anchor=NE, x=1000, y=700)
 
 root.mainloop()
